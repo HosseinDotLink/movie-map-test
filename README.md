@@ -1,6 +1,6 @@
 # Movie map challenge
 
-An applicatiob that shows on a map where movies have been filmed. That's enable on [hereoku](https://movie-map-test.herokuapp.com/) (ci/cd enabled)
+An applicatiob that shows on a map where movies have been filmed. That's enable on [heroku](https://movie-map-test.herokuapp.com/) (ci/cd enabled)
 
 ## Installation
 
