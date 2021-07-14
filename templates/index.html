@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Movies in SF</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+		integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+		crossorigin="" />
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+		integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+		crossorigin=""></script>
+</head>
+
+<body>
+
+	<div class="container">
+		<div class="item1">
+			<h2 class="m-b-10">Search</h2>
+			<div class="">
+				<input class="select" type="text" name="search" id="search" placeholder="  Search..."
+					onKeyPress="return handleChange(event)">
+			</div>
+
+			<h2 class="m-b-10 m-t-10">Director</h2>
+			<div class="select">
+				<select name="director" id="director" onchange="this.options[this.selectedIndex].value && (window.location = encodeURI(
+					'?director=' + getElementById('director').options[getElementById('director').selectedIndex].value + 
+					'&writer=' + getElementById('writer').options[getElementById('writer').selectedIndex].value + 
+					'&actor=' + getElementById('actor').options[getElementById('actor').selectedIndex].value + 
+					'&company=' + getElementById('company').options[getElementById('company').selectedIndex].value + 
+					'&locations=' + getElementById('locations').options[getElementById('locations').selectedIndex].value + 
+					'&search=' + getElementById('search').value 
+					));">
+					<option selected disabled value="">Choose an option</option>
+					{{#each sideData.director}}
+					<option value="{{this}}">{{this}}</option>
+					{{/each}}
+				</select>
+			</div>
+
+			<h2 class="m-b-10 m-t-10">Writer</h2>
+			<div class="select">
+				<select name="writer" id="writer" onchange="this.options[this.selectedIndex].value && (window.location = encodeURI(
+					'?director=' + getElementById('director').options[getElementById('director').selectedIndex].value + 
+					'&writer=' + getElementById('writer').options[getElementById('writer').selectedIndex].value + 
+					'&actor=' + getElementById('actor').options[getElementById('actor').selectedIndex].value + 
+					'&company=' + getElementById('company').options[getElementById('company').selectedIndex].value + 
+					'&locations=' + getElementById('locations').options[getElementById('locations').selectedIndex].value + 
+					'&search=' + getElementById('search').value 
+					));">
+					<option selected disabled value="">Choose an option</option>
+					{{#each sideData.writer}}
+					<option value="{{this}}">{{this}}</option>
+					{{/each}}
+				</select>
+			</div>
+
+			<h2 class="m-b-10 m-t-10">Actor</h2>
+			<div class="select">
+				<select name="actor" id="actor" onchange="this.options[this.selectedIndex].value && (window.location = encodeURI(
+					'?director=' + getElementById('director').options[getElementById('director').selectedIndex].value + 
+					'&writer=' + getElementById('writer').options[getElementById('writer').selectedIndex].value + 
+					'&actor=' + getElementById('actor').options[getElementById('actor').selectedIndex].value + 
+					'&company=' + getElementById('company').options[getElementById('company').selectedIndex].value + 
+					'&locations=' + getElementById('locations').options[getElementById('locations').selectedIndex].value + 
+					'&search=' + getElementById('search').value 
+					));">
+					<option selected disabled value="">Choose an option</option>
+					{{#each sideData.actor}}
+					<option value="{{this}}">{{this}}</option>
+					{{/each}}
+				</select>
+			</div>
+
+			<h2 class="m-b-10 m-t-10">Company</h2>
+			<div class="select">
+				<select name="company" id="company" onchange="this.options[this.selectedIndex].value && (window.location = encodeURI(
+					'?director=' + getElementById('director').options[getElementById('director').selectedIndex].value + 
+					'&writer=' + getElementById('writer').options[getElementById('writer').selectedIndex].value + 
+					'&actor=' + getElementById('actor').options[getElementById('actor').selectedIndex].value + 
+					'&company=' + getElementById('company').options[getElementById('company').selectedIndex].value + 
+					'&locations=' + getElementById('locations').options[getElementById('locations').selectedIndex].value + 
+					'&search=' + getElementById('search').value 
+					));">
+					<option selected disabled value="">Choose an option</option>
+					{{#each sideData.company}}
+					<option value="{{this}}">{{this}}</option>
+					{{/each}}
+				</select>
+			</div>
+
+			<h2 class="m-b-10 m-t-10">Location</h2>
+			<div class="select">
+				<select name="locations" id="locations" onchange="this.options[this.selectedIndex].value && (window.location = encodeURI(
+					'?director=' + getElementById('director').options[getElementById('director').selectedIndex].value + 
+					'&writer=' + getElementById('writer').options[getElementById('writer').selectedIndex].value + 
+					'&actor=' + getElementById('actor').options[getElementById('actor').selectedIndex].value + 
+					'&company=' + getElementById('company').options[getElementById('company').selectedIndex].value + 
+					'&locations=' + getElementById('locations').options[getElementById('locations').selectedIndex].value + 
+					'&search=' + getElementById('search').value 
+					));">
+					<option selected disabled value="">Choose an option</option>
+					{{#each sideData.locations}}
+					<option value="{{this}}">{{this}}</option>
+					{{/each}}
+				</select>
+			</div>
+		</div>
+
+		<div class="item2" id="mapid"></div>
+		<input type="hidden" id="thingIWant" value='{{movies}}' />
+	</div>
+	<script>
+		const urlSearchParams = new URLSearchParams(window.location.search);
+		const params = Object.fromEntries(urlSearchParams.entries());
+		if (params.hasOwnProperty('director')) {
+			if (params.director != "") {
+				document.getElementById('director').value = params.director;
+			}
+		}
+		if (params.hasOwnProperty('writer')) {
+			if (params.writer != "") {
+				document.getElementById('writer').value = params.writer;
+			}
+		}
+		if (params.hasOwnProperty('actor')) {
+			if (params.actor != "") {
+				document.getElementById('actor').value = params.actor;
+			}
+		}
+		if (params.hasOwnProperty('company')) {
+			if (params.company != "") {
+				document.getElementById('company').value = params.company;
+			}
+		}
+		if (params.hasOwnProperty('locations')) {
+			if (params.locations != "") {
+				document.getElementById('locations').value = params.locations;
+			}
+		}
+		if (params.hasOwnProperty('search')) {
+			if (params.search != "") {
+				document.getElementById('search').value = params.search;
+			}
+		}
+	</script>
+
+	<script>
+		var movies = JSON.parse(document.getElementById("thingIWant").value);
+		var mapView = [];
+		var mymap = L.map('mapid');
+
+		L.tileLayer(
+			'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+				maxZoom: 18,
+				attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+					'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+				id: 'mapbox/streets-v11',
+				tileSize: 512,
+				zoomOffset: -1
+			}).addTo(mymap);
+		for (let index = 0; index < movies.length; index++) {
+			L.marker(movies[index].locationGeometricData.coordinates).addTo(mymap)
+				.bindPopup(
+					'Title: ' + movies[index].title +
+					'<br>Release year: ' + movies[index].release_year +
+					'<br>Director: ' + movies[index].director +
+					'<br>Writer: ' + movies[index].writer +
+					'<br>Actor: ' + movies[index].actor +
+					'<br>Production company: ' + movies[index].production_company +
+					'<br>Location: ' + movies[index].locations
+				);
+			mapView.push(movies[index].locationGeometricData.coordinates);
+		}
+		mymap.fitBounds(mapView);
+	</script>
+
+	<script>
+		handleChange = (event) => {
+			event.preventDefault();
+			var keyCode = event.keyCode || event.which;
+			if (keyCode == '13') {
+				window.location = encodeURI(
+					'?director=' + document.getElementById('director').options[document.getElementById('director')
+						.selectedIndex].value +
+					'&writer=' + document.getElementById('writer').options[document.getElementById('writer')
+						.selectedIndex].value +
+					'&actor=' + document.getElementById('actor').options[document.getElementById('actor')
+						.selectedIndex].value +
+					'&company=' + document.getElementById('company').options[document.getElementById('company')
+						.selectedIndex].value +
+					'&locations=' + document.getElementById('locations').options[document.getElementById('locations')
+						.selectedIndex].value +
+					'&search=' + document.getElementById('search').value
+				);
+				return false;
+			} else {
+				event.target.value = event.target.value + event.key;
+			}
+		}
+	</script>
+
+</body>
+
+</html>
